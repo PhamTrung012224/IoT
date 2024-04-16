@@ -54,11 +54,7 @@ def serial_read_data(ser):
         if len(data_array) >= 7:
             array_size = len(data_array)
             value = data_array[array_size - 4] * 256 + data_array[array_size - 3]
-            return value
-        else:
-            return -1
-    return 0
-
+        return value
 # soil_temperature =[1, 3, 0, 6, 0, 1, 100, 11]
 # def readTemperature():
 #     serial_read_data(ser)
