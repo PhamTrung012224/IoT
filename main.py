@@ -14,7 +14,7 @@ def getPort():
             splitPort = strPort.split(" ")
             commPort = (splitPort[0])
     # return commPort
-    return "/dev/ttyUSB1"
+    return "/dev/ttyUSB0"
 
 
 try:
@@ -23,8 +23,8 @@ try:
 except:
     print("Can not open the port")
 
-data_ON  = [2, 6, 0, 0, 0, 255]
-data_OFF = [2, 6, 0, 0, 0, 0]
+data_ON  = [0, 6, 0, 0, 0, 255]
+data_OFF = [0, 6, 0, 0, 0, 0]
 
 def calculate_crc16(data):
     crc = 0xFFFF
@@ -35,7 +35,9 @@ def calculate_crc16(data):
                 crc = (crc >> 1) ^ 0xA001
             else:
                 crc >>= 1
-    return ((crc << 8) & 0xFF00) | ((crc >> 8) & 0x00FF)
+    crc_low = crc & 0xFF
+    crc_high = (crc >> 8) & 0xFF
+    return data + [crc_low, crc_high]
 
 def setDevice1(state):
     if state == True:
@@ -54,7 +56,11 @@ def serial_read_data(ser):
         if len(data_array) >= 7:
             array_size = len(data_array)
             value = data_array[array_size - 4] * 256 + data_array[array_size - 3]
-        return value
+            return value
+        else:
+            return -1
+    return 0
+
 # soil_temperature =[1, 3, 0, 6, 0, 1, 100, 11]
 # def readTemperature():
 #     serial_read_data(ser)
